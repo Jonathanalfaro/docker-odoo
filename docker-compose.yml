@@ -1,0 +1,48 @@
+version: '3'
+services:
+  web:
+    container_name: odoo-web
+    image: jonas4784/gnsys:latest
+    depends_on:
+      - db
+    ports:
+      - "8069:8069/tcp"
+    environment:
+      - HOST=db
+      - USER=odoo
+      - PASSWORD=odoo
+    volumes:
+      - ${ODOO_SRC_PATH}:/usr/lib/python3/dist-packages/odoo/
+      - web-data:/var/lib/odoo
+      #- ./config:/etc/odoo
+      - ${ADDONS_PATH}:/mnt/extra-addons
+      - ${ADDONS_PATH}:/var/lib/odoo/.local/share/Odoo/addons/
+  db:
+    container_name: postgresql_15
+    image: postgres:15
+    volumes:
+      - db-data:/var/lib/postgresql/data/pgdata
+    ports:
+      - 5432:5432/tcp
+    environment:
+    - POSTGRES_PASSWORD=odoo
+    - POSTGRES_USER=odoo
+    - POSTGRES_DB=postgres
+    - PGDATA=/var/lib/postgresql/data/pgdata
+  portainer:
+    image: portainer/portainer:latest
+    container_name: portainer
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./data:/data
+    ports:
+      - 9000:9000
+volumes:
+  db-data:
+    driver: local
+  web-data:
+    driver: local

@@ -1,0 +1,4 @@
+- Descargar código fuente de odoo
+- Clonar el repositorio https://github.com/VJavierAR/gnsys-17.git
+- Ejecutar docker compose up -d
+- Descargar Pycharm(opcional)
